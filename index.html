@@ -1,38 +1,167 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title></title>
-	</head>
-	<style type="text/css">
-		#ball{
-			width:100px;
-			height: 100px;
-			background: #FF1493;
-			border-radius:50%;
-			position: absolute;
-			left:0;
-		    top: 0;
-		}
-	</style>
-	<body>
-		<div id="ball">
-			
-		</div>
-	</body>
-</html>
-<script type="text/javascript">
-	console.log(document.documentElement.clientHeight);
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<script src="vue.js"></script>
+    <script src="axios.js"></script>
+    <link rel="stylesheet" href="./bootstrap/css/bootstrap.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>菜谱大全</title>
+</head>
+<style type="text/css">
+	*{
+		margin:0;
+		padding:0; 
+		list-style:none;
+	}
+	#app{
+		text-align: center;
+		margin-top:0;
+		background-color: pink;
+	}
+	.form-control{
+		width:200px;
+		height:30px;
+		line-height: 30px;
+		margin-left:30px;
+		
+	}
+	.chaxun{
+		display: flex;
+		justify-content:center;
+		 
+
+	}
+
+	h1{
+		background:skyblue;
+		text-align: center;
+		
+	}
+	p{
+		font-size:20px;
+		color:purple;
+	}
+	.btn-info{
+		width:70px;
+		height:30px;
+		margin-left: 20px;
+		margin-top:19px;
+		
+	}
+	.media{
+		
+		border:2px double springgreen;
+	}
+</style>
+<body>
+	    <div id="app">
+	    	<!-- <ul> -->
+	    		<!-- <li @click="qihuanfun(false)"><a href="#">菜谱</a></li> -->
+	    	<!-- </ul> -->
+	        <div  class="jumu">
+                    <div class="jumbotron">
+                        <h1>菜谱大全</h1>
+                        <p>舌尖上的中国美食，你值得拥有！</p>
+                    
+                   <div class="chaxun">
+                  <div>
+                        <a for="keyword">输入你喜欢的食物</a>
+                        <input type="text" class="form-control" v-model="keyword" id="keyword" placeholder=" ">
+                    </div>
+                    <br>
+                    <br>
+                    <div>
+                         <a for="num">输入你想要的数量</a>
+                        <input type="text" class="form-control" v-model="num" id="num" placeholder="0">
+                    </div>
+              <button type="submit" @click="caipu" class=" btn-info">点我查找</button>
+                </div>
+                    </div>
+                   </div>
+                   
+                        
+              
+
+               
+                <div class="result" v-for="(item,index) in list2" style="margin-top:10px">
+                    <div class="media">
+                        <div class="media-left">
+                            <a href="#">
+                                <img class="media-object" :src="item.pic" alt="...">
+                            </a>
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading">{{item.name}}</h4>
+                            {{item.content}}
+                            <table class="table" style="margin-top:15px;">
+                        <tr>
+                            <td v-for="(items,indexs) in item.material">
+                                {{ items.mname }} <br> {{ items.amount }}
+                            </td>
+                        </tr>
+                    </table>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-3" v-for="(items,indexs) in item.process">
+                            <div class="thumbnail" style="height:180px">
+                                <img :src="items.pic" style="width:180px;height:120px;" alt="...">
+                                <div class="caption">
+                                    <p style="height:60px;font-size:5px">{{ items.pcontent }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+     </div>           
 	
-	document.onmousemove = function(e){
-		console.log(e.clientX);
-		console.log(e.clientY);
-		ball.style.left = e.clientX - 50+'px';
-		ball.style.top = e.clientY - 0+'px';
-		if(ball.offsetLeft<=0)
-		ball.style.left = 0;
-	}
-	if(ball.offsetLeft>=(document.documentElement.clientWidth-100)){
-		ball.style.left= (document.documentElement.clientWidth-100) + 'px';
-	}
+</body>
+</html>
+<script>
+    /*
+    *   接口:/getweather
+    *
+    *   type:get
+    *
+    *   参数:city=城市名称
+    *
+    * */
+    new Vue({
+        el:'#app',
+        data:{
+            keyword:'   ',
+            num:null,
+
+           
+            
+            list2:[]
+
+        },
+        methods:{
+            // getWeather:function(){
+            //     let _this = this;
+            //     axios.get('http://192.168.92.62:3000/getweather?city=' +  this.city).then(function (response) {
+            //         console.log(response.data.result.daily);
+            //         _this.list = response.data.result.daily
+            //     })
+            // },
+            // qihuanfun:function(bool){
+            //     this.hidden = bool;
+            // },
+            caipu:function(){
+                let _this = this;
+                axios.get('http://192.168.92.62:3000/getcaipu?keyword='+ this.keyword +'&num=' +  this.num).then(function (response) {
+                    console.log(response.data.result.list);
+                    _this.list2 = response.data.result.list
+                })
+
+            }
+        }
+    })
+
+
 </script>
